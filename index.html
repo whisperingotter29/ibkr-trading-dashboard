@@ -20,6 +20,7 @@
   --color-text-dim: #6b6b80;
   --color-border: rgba(0,212,170,0.10);
   --color-border-solid: #1a1a2e;
+  --color-warn: #f4a261;
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Source Sans 3', sans-serif;
 }
@@ -85,6 +86,10 @@ nav.scrolled { background: rgba(8,8,15,0.95); border-bottom: 1px solid var(--col
 .hero-sub {
   font-size: 18px; color: var(--color-text-dim); max-width: 440px; margin: 0 auto 40px;
 }
+.hero-timestamp {
+  font-family: var(--font-display); font-size: 11px; color: var(--color-text-dim);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
 
 /* STATS ROW */
 .stats-row {
@@ -108,6 +113,35 @@ nav.scrolled { background: rgba(8,8,15,0.95); border-bottom: 1px solid var(--col
 .stat-value.negative { color: var(--color-danger); }
 .stat-detail {
   font-size: 13px; color: var(--color-text-dim); margin-top: 4px;
+}
+
+/* POSITIONS ROW */
+.positions-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px;
+  background: var(--color-border-solid); border: 1px solid var(--color-border-solid);
+  border-top: none;
+  margin: 0 32px;
+}
+.pos-card {
+  background: var(--color-surface); padding: 20px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.pos-info { display: flex; flex-direction: column; gap: 2px; }
+.pos-sym {
+  font-family: var(--font-display); font-size: 16px; font-weight: 700;
+  color: var(--color-primary);
+}
+.pos-desc {
+  font-size: 12px; color: var(--color-text-dim);
+  font-family: var(--font-display); letter-spacing: 0.03em;
+}
+.pos-vals { text-align: right; }
+.pos-qty {
+  font-family: var(--font-display); font-size: 14px; font-weight: 600;
+  color: var(--color-text);
+}
+.pos-upnl {
+  font-family: var(--font-display); font-size: 12px; font-weight: 600;
 }
 
 /* SECTIONS */
@@ -269,6 +303,7 @@ footer {
 @media (max-width: 768px) {
   .hero-title { font-size: 36px; }
   .stats-row { grid-template-columns: repeat(2, 1fr); margin: 0 16px; }
+  .positions-row { margin: 0 16px; }
   section { padding: 64px 16px; }
   nav { padding: 12px 16px; }
   .nav-links { display: none; }
@@ -310,29 +345,53 @@ footer {
     <div class="hero-label">Interactive Brokers</div>
     <h1 class="hero-title">Trading Dashboard</h1>
     <p class="hero-sub">Real-time account analytics and trade history from your IBKR portfolio</p>
+    <div class="hero-timestamp">Data refreshed Jun 20, 2026</div>
   </div>
 </section>
 
 <div class="stats-row" id="overview" data-animate="fade-up">
   <div class="stat-card">
     <div class="stat-label">Net Liquidation</div>
-    <div class="stat-value positive">$4,895.62</div>
-    <div class="stat-detail">All cash / No open positions</div>
+    <div class="stat-value positive">$5,403</div>
+    <div class="stat-detail">Cash $4,425 + Positions $978</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Buying Power</div>
-    <div class="stat-value">$19,582</div>
-    <div class="stat-detail">4x leverage available</div>
+    <div class="stat-value">$7,709</div>
+    <div class="stat-detail">3.1x leverage / 3 day trades left</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">YTD Realized P&L</div>
-    <div class="stat-value negative">-$3,870</div>
-    <div class="stat-detail">443 trades / $459 commissions</div>
+    <div class="stat-value negative">-$3,603</div>
+    <div class="stat-detail">461 trades / $471 commissions</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Win Rate (Days)</div>
-    <div class="stat-value positive">56.7%</div>
-    <div class="stat-detail">55W / 42L / 6E</div>
+    <div class="stat-value positive">54.2%</div>
+    <div class="stat-detail">58W / 43L / 6E</div>
+  </div>
+</div>
+
+<div class="positions-row" data-animate="fade-up">
+  <div class="pos-card">
+    <div class="pos-info">
+      <span class="pos-sym">BRK B</span>
+      <span class="pos-desc">Berkshire Hathaway Inc CL B</span>
+    </div>
+    <div class="pos-vals">
+      <div class="pos-qty">2 shares @ $497.21</div>
+      <div class="pos-upnl" style="color:var(--color-danger)">-$15.50 unrealized</div>
+    </div>
+  </div>
+  <div class="pos-card">
+    <div class="pos-info">
+      <span class="pos-sym">MES</span>
+      <span class="pos-desc">Micro E-Mini S&P 500 Sep'26</span>
+    </div>
+    <div class="pos-vals">
+      <div class="pos-qty">-1 contract @ 7563.38</div>
+      <div class="pos-upnl" style="color:var(--color-primary)">+$34.38 unrealized</div>
+    </div>
   </div>
 </div>
 
@@ -365,26 +424,34 @@ footer {
 </section>
 
 <footer>
-  <p>IBKR Trading Terminal — Data sourced live from Interactive Brokers MCP — Built 2026</p>
+  <p>IBKR Trading Terminal — Data sourced live from Interactive Brokers MCP — Refreshed Jun 20, 2026</p>
 </footer>
 
 <script>
-// === TRADE DATA (embedded from IBKR) ===
-const DAILY_DATA = [{"date": "2026-01-02", "pnl": -150.92, "trades": 12, "commission": 13.92, "symbols": ["MGC"]}, {"date": "2026-01-05", "pnl": 290.52, "trades": 2, "commission": 3.48, "symbols": ["MGC"]}, {"date": "2026-01-06", "pnl": 211.04, "trades": 5, "commission": 6.96, "symbols": ["MGC"]}, {"date": "2026-01-07", "pnl": 198.52, "trades": 3, "commission": 5.22, "symbols": ["MGC"]}, {"date": "2026-01-08", "pnl": 58.52, "trades": 2, "commission": 3.48, "symbols": ["MGC"]}, {"date": "2026-01-09", "pnl": 332.52, "trades": 1, "commission": 1.74, "symbols": ["MGC"]}, {"date": "2026-01-12", "pnl": 294.52, "trades": 4, "commission": 5.22, "symbols": ["MGC"]}, {"date": "2026-01-13", "pnl": -61.92, "trades": 7, "commission": 12.18, "symbols": ["MGC"]}, {"date": "2026-01-14", "pnl": -274.4, "trades": 12, "commission": 17.4, "symbols": ["MGC"]}, {"date": "2026-01-15", "pnl": 380.04, "trades": 5, "commission": 6.96, "symbols": ["MGC"]}, {"date": "2026-01-16", "pnl": 112.52, "trades": 3, "commission": 3.48, "symbols": ["MGC"]}, {"date": "2026-01-18", "pnl": 0.0, "trades": 2, "commission": 1.74, "symbols": ["MGC"]}, {"date": "2026-01-20", "pnl": 125.52, "trades": 1, "commission": 1.74, "symbols": ["MGC"]}, {"date": "2026-01-21", "pnl": -515.96, "trades": 5, "commission": 6.96, "symbols": ["MGC"]}, {"date": "2026-01-22", "pnl": 556.08, "trades": 8, "commission": 13.92, "symbols": ["MGC"]}, {"date": "2026-01-23", "pnl": 92.52, "trades": 2, "commission": 3.48, "symbols": ["MGC"]}, {"date": "2026-01-25", "pnl": 0.0, "trades": 1, "commission": 1.74, "symbols": ["MGC"]}, {"date": "2026-01-26", "pnl": 257.04, "trades": 4, "commission": 5.22, "symbols": ["MGC"]}, {"date": "2026-01-27", "pnl": 328.52, "trades": 3, "commission": 3.48, "symbols": ["MGC"]}, {"date": "2026-01-28", "pnl": 274.26, "trades": 2, "commission": 1.74, "symbols": ["MGC"]}, {"date": "2026-01-29", "pnl": 351.52, "trades": 3, "commission": 3.48, "symbols": ["MGC"]}, {"date": "2026-01-30", "pnl": 405.52, "trades": 3, "commission": 3.48, "symbols": ["MGC"]}, {"date": "2026-02-02", "pnl": 471.52, "trades": 4, "commission": 3.48, "symbols": ["MGC"]}, {"date": "2026-02-03", "pnl": 534.52, "trades": 4, "commission": 3.48, "symbols": ["MGC"]}, {"date": "2026-02-04", "pnl": 248.56, "trades": 10, "commission": 12.18, "symbols": ["MGC"]}, {"date": "2026-02-05", "pnl": -2818.44, "trades": 7, "commission": 9.57, "symbols": ["MGC"]}, {"date": "2026-02-06", "pnl": 922.26, "trades": 1, "commission": 0.87, "symbols": ["MGC"]}, {"date": "2026-02-09", "pnl": 541.82, "trades": 11, "commission": 12.92, "symbols": ["MGC", "MNQ"]}, {"date": "2026-02-10", "pnl": 391.52, "trades": 2, "commission": 1.74, "symbols": ["MGC"]}, {"date": "2026-02-11", "pnl": -809.62, "trades": 15, "commission": 23.49, "symbols": ["MGC"]}, {"date": "2026-02-12", "pnl": -568.44, "trades": 8, "commission": 10.31, "symbols": ["MGC", "MES"]}, {"date": "2026-02-13", "pnl": 370.52, "trades": 1, "commission": 1.74, "symbols": ["MGC"]}, {"date": "2026-02-15", "pnl": 0.0, "trades": 2, "commission": 1.74, "symbols": ["MGC"]}, {"date": "2026-02-16", "pnl": -436.96, "trades": 4, "commission": 5.22, "symbols": ["MGC"]}, {"date": "2026-02-17", "pnl": 901.04, "trades": 7, "commission": 8.7, "symbols": ["MGC"]}, {"date": "2026-02-18", "pnl": -1450.66, "trades": 13, "commission": 14.79, "symbols": ["MGC"]}, {"date": "2026-02-19", "pnl": 278.78, "trades": 6, "commission": 6.09, "symbols": ["MGC"]}, {"date": "2026-02-20", "pnl": -335.22, "trades": 3, "commission": 3.48, "symbols": ["MGC"]}, {"date": "2026-02-23", "pnl": 595.52, "trades": 2, "commission": 2.48, "symbols": ["MNQ"]}, {"date": "2026-02-24", "pnl": -208.48, "trades": 2, "commission": 2.48, "symbols": ["MNQ"]}, {"date": "2026-02-25", "pnl": 15.58, "trades": 9, "commission": 9.92, "symbols": ["MNQ"]}, {"date": "2026-02-26", "pnl": 335.02, "trades": 3, "commission": 2.48, "symbols": ["MNQ"]}, {"date": "2026-02-27", "pnl": -306.48, "trades": 2, "commission": 2.48, "symbols": ["MNQ"]}, {"date": "2026-03-01", "pnl": 0.0, "trades": 1, "commission": 0.87, "symbols": ["MGC"]}, {"date": "2026-03-02", "pnl": -831.16, "trades": 17, "commission": 13.79, "symbols": ["MGC", "MES"]}, {"date": "2026-03-03", "pnl": -1173.39, "trades": 17, "commission": 19.49, "symbols": ["MES", "MGC", "MNQ", "MCL"]}, {"date": "2026-03-04", "pnl": 849.6, "trades": 4, "commission": 15.4, "symbols": ["MCL"]}, {"date": "2026-03-05", "pnl": 873.6, "trades": 4, "commission": 11.55, "symbols": ["MCL"]}, {"date": "2026-03-06", "pnl": 473.22, "trades": 11, "commission": 13.38, "symbols": ["MGC", "PLTR", "MCL"]}, {"date": "2026-03-09", "pnl": -3325.62, "trades": 6, "commission": 6.16, "symbols": ["MCL"]}, {"date": "2026-03-10", "pnl": -2437.54, "trades": 1, "commission": 0.77, "symbols": ["MCL"]}, {"date": "2026-03-16", "pnl": -500.78, "trades": 4, "commission": 2.63, "symbols": ["MES", "MCL"]}, {"date": "2026-03-17", "pnl": -137.47, "trades": 5, "commission": 3.1, "symbols": ["MES"]}, {"date": "2026-03-18", "pnl": 233.76, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-03-19", "pnl": -113.74, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-03-20", "pnl": -79.99, "trades": 3, "commission": 1.86, "symbols": ["MES"]}, {"date": "2026-03-22", "pnl": 285.01, "trades": 1, "commission": 0.62, "symbols": ["MES"]}, {"date": "2026-03-23", "pnl": 146.27, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-03-24", "pnl": 142.51, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-03-25", "pnl": -94.98, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-03-26", "pnl": 110.01, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-03-30", "pnl": 13.77, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-03-31", "pnl": 341.27, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-04-01", "pnl": -63.74, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-04-02", "pnl": -47.49, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-04-05", "pnl": 0.0, "trades": 1, "commission": 0.62, "symbols": ["MES"]}, {"date": "2026-04-06", "pnl": -206.22, "trades": 5, "commission": 3.1, "symbols": ["MES"]}, {"date": "2026-04-07", "pnl": 233.77, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-04-08", "pnl": -94.99, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-04-13", "pnl": 95.01, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-04-14", "pnl": -49.99, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-04-15", "pnl": -47.49, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-04-16", "pnl": -103.87, "trades": 5, "commission": 5.12, "symbols": ["MES", "MHG"]}, {"date": "2026-04-20", "pnl": 46.27, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-04-21", "pnl": 28.81, "trades": 12, "commission": 7.44, "symbols": ["MES"]}, {"date": "2026-04-22", "pnl": -96.22, "trades": 6, "commission": 3.72, "symbols": ["MES"]}, {"date": "2026-04-23", "pnl": -68.72, "trades": 6, "commission": 3.72, "symbols": ["MES"]}, {"date": "2026-04-24", "pnl": -123.73, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-04-27", "pnl": 82.51, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-04-28", "pnl": -188.71, "trades": 8, "commission": 4.96, "symbols": ["MES"]}, {"date": "2026-04-29", "pnl": 60.04, "trades": 8, "commission": 4.96, "symbols": ["MES"]}, {"date": "2026-04-30", "pnl": 76.26, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-05-01", "pnl": 0.0, "trades": 1, "commission": 0.62, "symbols": ["MES"]}, {"date": "2026-05-04", "pnl": -311.24, "trades": 1, "commission": 0.62, "symbols": ["MES"]}, {"date": "2026-05-05", "pnl": 23.77, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-05-06", "pnl": 100.01, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-05-07", "pnl": -3.74, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-05-08", "pnl": 67.51, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-05-10", "pnl": -69.99, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-05-11", "pnl": 3.76, "trades": 3, "commission": 1.86, "symbols": ["MES"]}, {"date": "2026-05-12", "pnl": -104.98, "trades": 3, "commission": 1.86, "symbols": ["MES"]}, {"date": "2026-05-14", "pnl": -23.73, "trades": 5, "commission": 3.1, "symbols": ["MES"]}, {"date": "2026-05-15", "pnl": -19.98, "trades": 3, "commission": 1.86, "symbols": ["MES"]}, {"date": "2026-05-18", "pnl": 93.76, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-05-19", "pnl": 88.76, "trades": 2, "commission": 1.24, "symbols": ["MES"]}, {"date": "2026-05-20", "pnl": -38.73, "trades": 5, "commission": 3.1, "symbols": ["MES"]}, {"date": "2026-05-21", "pnl": 101.26, "trades": 1, "commission": 0.62, "symbols": ["MES"]}, {"date": "2026-05-22", "pnl": -61.23, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-05-25", "pnl": -41.24, "trades": 3, "commission": 1.86, "symbols": ["MES"]}, {"date": "2026-05-26", "pnl": 63.77, "trades": 3, "commission": 1.86, "symbols": ["MES"]}, {"date": "2026-05-27", "pnl": 15.02, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-05-28", "pnl": 31.27, "trades": 4, "commission": 2.48, "symbols": ["MES"]}, {"date": "2026-05-29", "pnl": -28.73, "trades": 4, "commission": 2.48, "symbols": ["MES"]}];
+// === TRADE DATA (embedded from IBKR — refreshed 2026-06-20) ===
+const DAILY_DATA = [{"date":"2026-01-02","pnl":-150.92,"trades":12,"commission":13.92,"symbols":["MGC"]},{"date":"2026-01-05","pnl":290.52,"trades":2,"commission":3.48,"symbols":["MGC"]},{"date":"2026-01-06","pnl":211.04,"trades":5,"commission":6.96,"symbols":["MGC"]},{"date":"2026-01-07","pnl":198.52,"trades":3,"commission":5.22,"symbols":["MGC"]},{"date":"2026-01-08","pnl":58.52,"trades":2,"commission":3.48,"symbols":["MGC"]},{"date":"2026-01-09","pnl":332.52,"trades":1,"commission":1.74,"symbols":["MGC"]},{"date":"2026-01-12","pnl":294.52,"trades":4,"commission":5.22,"symbols":["MGC"]},{"date":"2026-01-13","pnl":-61.92,"trades":7,"commission":12.18,"symbols":["MGC"]},{"date":"2026-01-14","pnl":-274.4,"trades":12,"commission":17.4,"symbols":["MGC"]},{"date":"2026-01-15","pnl":380.04,"trades":5,"commission":6.96,"symbols":["MGC"]},{"date":"2026-01-16","pnl":112.52,"trades":3,"commission":3.48,"symbols":["MGC"]},{"date":"2026-01-18","pnl":0.0,"trades":2,"commission":1.74,"symbols":["MGC"]},{"date":"2026-01-20","pnl":125.52,"trades":1,"commission":1.74,"symbols":["MGC"]},{"date":"2026-01-21","pnl":-515.96,"trades":5,"commission":6.96,"symbols":["MGC"]},{"date":"2026-01-22","pnl":556.08,"trades":8,"commission":13.92,"symbols":["MGC"]},{"date":"2026-01-23","pnl":92.52,"trades":2,"commission":3.48,"symbols":["MGC"]},{"date":"2026-01-25","pnl":0.0,"trades":1,"commission":1.74,"symbols":["MGC"]},{"date":"2026-01-26","pnl":257.04,"trades":4,"commission":5.22,"symbols":["MGC"]},{"date":"2026-01-27","pnl":328.52,"trades":3,"commission":3.48,"symbols":["MGC"]},{"date":"2026-01-28","pnl":274.26,"trades":2,"commission":1.74,"symbols":["MGC"]},{"date":"2026-01-29","pnl":351.52,"trades":3,"commission":3.48,"symbols":["MGC"]},{"date":"2026-01-30","pnl":405.52,"trades":3,"commission":3.48,"symbols":["MGC"]},{"date":"2026-02-02","pnl":471.52,"trades":4,"commission":3.48,"symbols":["MGC"]},{"date":"2026-02-03","pnl":534.52,"trades":4,"commission":3.48,"symbols":["MGC"]},{"date":"2026-02-04","pnl":248.56,"trades":10,"commission":12.18,"symbols":["MGC"]},{"date":"2026-02-05","pnl":-2818.44,"trades":7,"commission":9.57,"symbols":["MGC"]},{"date":"2026-02-06","pnl":922.26,"trades":1,"commission":0.87,"symbols":["MGC"]},{"date":"2026-02-09","pnl":541.82,"trades":11,"commission":12.92,"symbols":["MGC","MNQ"]},{"date":"2026-02-10","pnl":391.52,"trades":2,"commission":1.74,"symbols":["MGC"]},{"date":"2026-02-11","pnl":-809.62,"trades":15,"commission":23.49,"symbols":["MGC"]},{"date":"2026-02-12","pnl":-568.44,"trades":8,"commission":10.31,"symbols":["MGC","MES"]},{"date":"2026-02-13","pnl":370.52,"trades":1,"commission":1.74,"symbols":["MGC"]},{"date":"2026-02-15","pnl":0.0,"trades":2,"commission":1.74,"symbols":["MGC"]},{"date":"2026-02-16","pnl":-436.96,"trades":4,"commission":5.22,"symbols":["MGC"]},{"date":"2026-02-17","pnl":901.04,"trades":7,"commission":8.7,"symbols":["MGC"]},{"date":"2026-02-18","pnl":-1450.66,"trades":13,"commission":14.79,"symbols":["MGC"]},{"date":"2026-02-19","pnl":278.78,"trades":6,"commission":6.09,"symbols":["MGC"]},{"date":"2026-02-20","pnl":-335.22,"trades":3,"commission":3.48,"symbols":["MGC"]},{"date":"2026-02-23","pnl":595.52,"trades":2,"commission":2.48,"symbols":["MNQ"]},{"date":"2026-02-24","pnl":-208.48,"trades":2,"commission":2.48,"symbols":["MNQ"]},{"date":"2026-02-25","pnl":15.58,"trades":9,"commission":9.92,"symbols":["MNQ"]},{"date":"2026-02-26","pnl":335.02,"trades":3,"commission":2.48,"symbols":["MNQ"]},{"date":"2026-02-27","pnl":-306.48,"trades":2,"commission":2.48,"symbols":["MNQ"]},{"date":"2026-03-01","pnl":0.0,"trades":1,"commission":0.87,"symbols":["MGC"]},{"date":"2026-03-02","pnl":-831.16,"trades":17,"commission":13.79,"symbols":["MGC","MES"]},{"date":"2026-03-03","pnl":-1173.39,"trades":17,"commission":19.49,"symbols":["MES","MGC","MNQ","MCL"]},{"date":"2026-03-04","pnl":849.6,"trades":4,"commission":15.4,"symbols":["MCL"]},{"date":"2026-03-05","pnl":873.6,"trades":4,"commission":11.55,"symbols":["MCL"]},{"date":"2026-03-06","pnl":473.22,"trades":11,"commission":13.38,"symbols":["MGC","PLTR","MCL"]},{"date":"2026-03-09","pnl":-3325.62,"trades":6,"commission":6.16,"symbols":["MCL"]},{"date":"2026-03-10","pnl":-2437.54,"trades":1,"commission":0.77,"symbols":["MCL"]},{"date":"2026-03-16","pnl":-500.78,"trades":4,"commission":2.63,"symbols":["MES","MCL"]},{"date":"2026-03-17","pnl":-137.47,"trades":5,"commission":3.1,"symbols":["MES"]},{"date":"2026-03-18","pnl":233.76,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-03-19","pnl":-113.74,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-03-20","pnl":-79.99,"trades":3,"commission":1.86,"symbols":["MES"]},{"date":"2026-03-22","pnl":285.01,"trades":1,"commission":0.62,"symbols":["MES"]},{"date":"2026-03-23","pnl":146.27,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-03-24","pnl":142.51,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-03-25","pnl":-94.98,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-03-26","pnl":110.01,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-03-30","pnl":13.77,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-03-31","pnl":341.27,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-04-01","pnl":-63.74,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-04-02","pnl":-47.49,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-04-05","pnl":0.0,"trades":1,"commission":0.62,"symbols":["MES"]},{"date":"2026-04-06","pnl":-206.22,"trades":5,"commission":3.1,"symbols":["MES"]},{"date":"2026-04-07","pnl":233.77,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-04-08","pnl":-94.99,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-04-13","pnl":95.01,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-04-14","pnl":-49.99,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-04-15","pnl":-47.49,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-04-16","pnl":-103.87,"trades":5,"commission":5.12,"symbols":["MES","MHG"]},{"date":"2026-04-20","pnl":46.27,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-04-21","pnl":28.81,"trades":12,"commission":7.44,"symbols":["MES"]},{"date":"2026-04-22","pnl":-96.22,"trades":6,"commission":3.72,"symbols":["MES"]},{"date":"2026-04-23","pnl":-68.72,"trades":6,"commission":3.72,"symbols":["MES"]},{"date":"2026-04-24","pnl":-123.73,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-04-27","pnl":82.51,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-04-28","pnl":-188.71,"trades":8,"commission":4.96,"symbols":["MES"]},{"date":"2026-04-29","pnl":60.04,"trades":8,"commission":4.96,"symbols":["MES"]},{"date":"2026-04-30","pnl":76.26,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-05-01","pnl":0.0,"trades":1,"commission":0.62,"symbols":["MES"]},{"date":"2026-05-04","pnl":-311.24,"trades":1,"commission":0.62,"symbols":["MES"]},{"date":"2026-05-05","pnl":23.77,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-05-06","pnl":100.01,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-05-07","pnl":-3.74,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-05-08","pnl":67.51,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-05-10","pnl":-69.99,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-05-11","pnl":3.76,"trades":3,"commission":1.86,"symbols":["MES"]},{"date":"2026-05-12","pnl":-104.98,"trades":3,"commission":1.86,"symbols":["MES"]},{"date":"2026-05-14","pnl":-23.73,"trades":5,"commission":3.1,"symbols":["MES"]},{"date":"2026-05-15","pnl":-19.98,"trades":3,"commission":1.86,"symbols":["MES"]},{"date":"2026-05-18","pnl":93.76,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-05-19","pnl":88.76,"trades":2,"commission":1.24,"symbols":["MES"]},{"date":"2026-05-20","pnl":-38.73,"trades":5,"commission":3.1,"symbols":["MES"]},{"date":"2026-05-21","pnl":101.26,"trades":1,"commission":0.62,"symbols":["MES"]},{"date":"2026-05-22","pnl":-61.23,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-05-25","pnl":-41.24,"trades":3,"commission":1.86,"symbols":["MES"]},{"date":"2026-05-26","pnl":63.77,"trades":3,"commission":1.86,"symbols":["MES"]},{"date":"2026-05-27","pnl":15.02,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-05-28","pnl":31.27,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-05-29","pnl":-28.73,"trades":4,"commission":2.48,"symbols":["MES"]},{"date":"2026-06-16","pnl":42.17,"trades":6,"commission":4.1,"symbols":["BRK B","MES"]},{"date":"2026-06-17","pnl":149.43,"trades":5,"commission":3.1,"symbols":["MES"]},{"date":"2026-06-18","pnl":76.31,"trades":6,"commission":3.72,"symbols":["MES"]},{"date":"2026-06-19","pnl":-0.62,"trades":1,"commission":0.62,"symbols":["MES"]}];
 
-const MONTHLY_DATA = [{"month": "2026-01", "pnl": 3265.98, "trades": 90, "commission": 127.02}, {"month": "2026-02", "pnl": -1327.64, "trades": 116, "commission": 139.64}, {"month": "2026-03", "pnl": -5225.65, "trades": 98, "commission": 104.5}, {"month": "2026-04", "pnl": -468.5, "trades": 79, "commission": 51.0}, {"month": "2026-05", "pnl": -114.7, "trades": 60, "commission": 37.2}];
+const MONTHLY_DATA = [{"month":"2026-01","pnl":3265.98,"trades":90,"commission":127.02},{"month":"2026-02","pnl":-1327.64,"trades":116,"commission":139.64},{"month":"2026-03","pnl":-5225.65,"trades":98,"commission":104.5},{"month":"2026-04","pnl":-468.5,"trades":79,"commission":51.0},{"month":"2026-05","pnl":-114.7,"trades":60,"commission":37.2},{"month":"2026-06","pnl":267.29,"trades":18,"commission":11.54}];
 
 const ACCOUNT = {
-  nlv: 4895.62,
-  buyingPower: 19582.48,
-  cash: 4895.62,
-  ytdPnl: -3870.51,
-  ytdComm: 459.36,
-  totalTrades: 443,
-  winDays: 55,
-  loseDays: 42,
+  nlv: 5403.25,
+  buyingPower: 7709.02,
+  cash: 4425.25,
+  stockValue: 978.0,
+  unrealizedPnl: 16.18,
+  ytdPnl: -3603.22,
+  ytdComm: 470.90,
+  totalTrades: 461,
+  winDays: 58,
+  loseDays: 43,
   evenDays: 6,
-  symbols: ['MCL','MES','MGC','MHG','MNQ','PLTR']
+  dayTradesLeft: 3,
+  leverage: '3.13',
+  symbols: ['BRK B','MCL','MES','MGC','MHG','MNQ','PLTR'],
+  positions: [
+    { sym: 'BRK B', desc: 'Berkshire Hathaway CL B', qty: 2, avg: 497.21, mktVal: 978.92, upnl: -15.50 },
+    { sym: 'MES', desc: 'Micro E-Mini S&P Sep\'26', qty: -1, avg: 7563.38, mktVal: -37782.50, upnl: 34.38 }
+  ]
 };
 
 // === THREE.JS PARTICLE FIELD ===
@@ -398,7 +465,6 @@ const ACCOUNT = {
   const camera = new THREE.PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
   camera.position.z = 12;
 
-  // Grid of points
   const geo = new THREE.BufferGeometry();
   const count = 2000;
   const pos = new Float32Array(count * 3);
@@ -412,7 +478,6 @@ const ACCOUNT = {
   const pts = new THREE.Points(geo, mat);
   scene.add(pts);
 
-  // Wireframe icosahedron
   const icoGeo = new THREE.IcosahedronGeometry(2.5, 1);
   const icoMat = new THREE.MeshBasicMaterial({ color: 0x00d4aa, wireframe: true, transparent: true, opacity: 0.12 });
   const ico = new THREE.Mesh(icoGeo, icoMat);
@@ -523,8 +588,8 @@ function renderView() {
 }
 
 function renderMonthView(container) {
-  const months = ['2026-01','2026-02','2026-03','2026-04','2026-05'];
-  const monthNames = ['January 2026','February 2026','March 2026','April 2026','May 2026'];
+  const months = ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06'];
+  const monthNames = ['January 2026','February 2026','March 2026','April 2026','May 2026','June 2026'];
   const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
   let html = '';
@@ -533,11 +598,11 @@ function renderMonthView(container) {
     const startDow = firstDay.getDay();
     const daysInMonth = new Date(parseInt(m.split('-')[0]), parseInt(m.split('-')[1]), 0).getDate();
 
-    html += `<div class="month-grid"><div class="month-label">${monthNames[mi]}</div>`;
-    html += `<div class="day-headers">${dayNames.map(d => `<div class="day-header">${d}</div>`).join('')}</div>`;
-    html += `<div class="days-grid">`;
+    html += '<div class="month-grid"><div class="month-label">' + monthNames[mi] + '</div>';
+    html += '<div class="day-headers">' + dayNames.map(d => '<div class="day-header">' + d + '</div>').join('') + '</div>';
+    html += '<div class="days-grid">';
 
-    for (let i = 0; i < startDow; i++) html += `<div class="day-cell empty"></div>`;
+    for (let i = 0; i < startDow; i++) html += '<div class="day-cell empty"></div>';
 
     for (let d = 1; d <= daysInMonth; d++) {
       const dateStr = m + '-' + String(d).padStart(2, '0');
@@ -549,12 +614,12 @@ function renderMonthView(container) {
         else if (data.pnl < 0) { cls = 'loss'; pnlText = fmt(data.pnl); }
         else { cls = 'even'; pnlText = '$0'; }
       }
-      html += `<div class="day-cell ${cls}" onmouseenter="showDayTip(event,'${dateStr}')" onmouseleave="hideTooltip()">`;
-      html += `<span class="day-num">${d}</span>`;
-      if (data) html += `<span class="day-pnl">${pnlText}</span>`;
-      html += `</div>`;
+      html += '<div class="day-cell ' + cls + '" onmouseenter="showDayTip(event,\'' + dateStr + '\')" onmouseleave="hideTooltip()">';
+      html += '<span class="day-num">' + d + '</span>';
+      if (data) html += '<span class="day-pnl">' + pnlText + '</span>';
+      html += '</div>';
     }
-    html += `</div></div>`;
+    html += '</div></div>';
   });
   container.innerHTML = html;
 }
@@ -562,18 +627,16 @@ function renderMonthView(container) {
 function showDayTip(e, dateStr) {
   const data = DAILY_DATA.find(x => x.date === dateStr);
   if (!data) return;
-  const cls = data.pnl >= 0 ? 'pos' : 'neg';
   const color = data.pnl >= 0 ? 'var(--color-primary)' : 'var(--color-danger)';
   showTooltip(e,
-    `<div class="tooltip-date">${dateStr}</div>
-     <div class="tooltip-pnl" style="color:${color}">${fmtFull(data.pnl)}</div>
-     <div style="color:var(--color-text-dim);margin-top:4px;">${data.trades} trades | ${data.symbols.join(', ')}</div>
-     <div style="color:var(--color-text-dim);">Comm: $${data.commission.toFixed(2)}</div>`
+    '<div class="tooltip-date">' + dateStr + '</div>' +
+    '<div class="tooltip-pnl" style="color:' + color + '">' + fmtFull(data.pnl) + '</div>' +
+    '<div style="color:var(--color-text-dim);margin-top:4px;">' + data.trades + ' trades | ' + data.symbols.join(', ') + '</div>' +
+    '<div style="color:var(--color-text-dim);">Comm: $' + data.commission.toFixed(2) + '</div>'
   );
 }
 
 function renderWeekView(container) {
-  // Group by ISO week
   const weeks = {};
   DAILY_DATA.forEach(d => {
     const dt = new Date(d.date);
@@ -588,17 +651,17 @@ function renderWeekView(container) {
   const entries = Object.entries(weeks).sort((a,b) => a[0].localeCompare(b[0]));
   const maxPnl = Math.max(...entries.map(e => Math.abs(e[1].pnl)), 1);
 
-  let html = `<div class="chart-area"><div class="chart-bars">`;
+  let html = '<div class="chart-area"><div class="chart-bars">';
   entries.forEach(([wk, data]) => {
     const h = Math.max(2, (Math.abs(data.pnl) / maxPnl) * 200);
     const cls = data.pnl >= 0 ? 'pos' : 'neg';
-    html += `<div class="chart-bar-wrap">
-      <div class="chart-bar-value ${cls}">${fmt(data.pnl)}</div>
-      <div class="chart-bar ${cls}" style="height:${h}px"></div>
-      <div class="chart-bar-label">${wk.split('-')[1]}</div>
-    </div>`;
+    html += '<div class="chart-bar-wrap">' +
+      '<div class="chart-bar-value ' + cls + '">' + fmt(data.pnl) + '</div>' +
+      '<div class="chart-bar ' + cls + '" style="height:' + h + 'px"></div>' +
+      '<div class="chart-bar-label">' + wk.split('-')[1] + '</div>' +
+    '</div>';
   });
-  html += `</div></div>`;
+  html += '</div></div>';
   container.innerHTML = html;
 }
 
@@ -606,25 +669,23 @@ function renderYearView(container) {
   const maxPnl = Math.max(...MONTHLY_DATA.map(m => Math.abs(m.pnl)), 1);
   const monthLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-  let html = `<div class="chart-area"><div class="chart-bars">`;
+  let html = '<div class="chart-area"><div class="chart-bars">';
   MONTHLY_DATA.forEach(m => {
     const mi = parseInt(m.month.split('-')[1]) - 1;
     const h = Math.max(2, (Math.abs(m.pnl) / maxPnl) * 220);
     const cls = m.pnl >= 0 ? 'pos' : 'neg';
-    html += `<div class="chart-bar-wrap">
-      <div class="chart-bar-value ${cls}">${fmt(m.pnl)}</div>
-      <div class="chart-bar ${cls}" style="height:${h}px"></div>
-      <div class="chart-bar-label">${monthLabels[mi]}</div>
-    </div>`;
+    html += '<div class="chart-bar-wrap">' +
+      '<div class="chart-bar-value ' + cls + '">' + fmt(m.pnl) + '</div>' +
+      '<div class="chart-bar ' + cls + '" style="height:' + h + 'px"></div>' +
+      '<div class="chart-bar-label">' + monthLabels[mi] + '</div>' +
+    '</div>';
   });
-  html += `</div></div>`;
+  html += '</div></div>';
   container.innerHTML = html;
 }
 
 function renderAllTimeView(container) {
-  // Cumulative equity curve
-  html = `<div class="equity-canvas-wrap"><canvas id="equityCanvas"></canvas></div>`;
-  container.innerHTML = html;
+  container.innerHTML = '<div class="equity-canvas-wrap"><canvas id="equityCanvas"></canvas></div>';
 
   const canvas = document.getElementById('equityCanvas');
   const ctx = canvas.getContext('2d');
@@ -640,7 +701,6 @@ function renderAllTimeView(container) {
   const plotW = w - pad.left - pad.right;
   const plotH = h - pad.top - pad.bottom;
 
-  // Build cumulative
   let cum = 0;
   const points = DAILY_DATA.map(d => { cum += d.pnl; return { date: d.date, value: cum }; });
   const minV = Math.min(0, ...points.map(p => p.value));
@@ -650,7 +710,6 @@ function renderAllTimeView(container) {
   function xPos(i) { return pad.left + (i / (points.length - 1)) * plotW; }
   function yPos(v) { return pad.top + plotH - ((v - minV) / range) * plotH; }
 
-  // Grid lines
   ctx.strokeStyle = 'rgba(100,100,130,0.12)';
   ctx.lineWidth = 1;
   const gridSteps = 5;
@@ -664,14 +723,12 @@ function renderAllTimeView(container) {
     ctx.fillText(fmt(val), pad.left - 8, y + 4);
   }
 
-  // Zero line
   const zeroY = yPos(0);
   ctx.strokeStyle = 'rgba(0,212,170,0.3)';
   ctx.setLineDash([4, 4]);
   ctx.beginPath(); ctx.moveTo(pad.left, zeroY); ctx.lineTo(w - pad.right, zeroY); ctx.stroke();
   ctx.setLineDash([]);
 
-  // Draw the curve
   ctx.beginPath();
   ctx.strokeStyle = '#00d4aa';
   ctx.lineWidth = 2;
@@ -681,7 +738,6 @@ function renderAllTimeView(container) {
   });
   ctx.stroke();
 
-  // Fill area under curve to zero
   ctx.beginPath();
   points.forEach((p, i) => {
     const x = xPos(i), y = yPos(p.value);
@@ -693,7 +749,6 @@ function renderAllTimeView(container) {
   ctx.fillStyle = 'rgba(0,212,170,0.06)';
   ctx.fill();
 
-  // X axis labels
   ctx.fillStyle = '#6b6b80';
   ctx.font = '10px Space Grotesk';
   ctx.textAlign = 'center';
@@ -731,13 +786,13 @@ function buildSymbolTable() {
     const net = data.pnl - data.commission;
     const pnlColor = data.pnl >= 0 ? 'var(--color-primary)' : 'var(--color-danger)';
     const netColor = net >= 0 ? 'var(--color-primary)' : 'var(--color-danger)';
-    html += `<tr>
-      <td style="font-weight:600;color:var(--color-primary)">${sym}</td>
-      <td>${data.trades}</td>
-      <td style="color:${pnlColor}">${fmtFull(data.pnl)}</td>
-      <td style="color:var(--color-text-dim)">$${data.commission.toFixed(2)}</td>
-      <td style="color:${netColor};font-weight:600">${fmtFull(net)}</td>
-    </tr>`;
+    html += '<tr>' +
+      '<td style="font-weight:600;color:var(--color-primary)">' + sym + '</td>' +
+      '<td>' + data.trades + '</td>' +
+      '<td style="color:' + pnlColor + '">' + fmtFull(data.pnl) + '</td>' +
+      '<td style="color:var(--color-text-dim)">$' + data.commission.toFixed(2) + '</td>' +
+      '<td style="color:' + netColor + ';font-weight:600">' + fmtFull(net) + '</td>' +
+    '</tr>';
   });
   body.innerHTML = html;
 }
